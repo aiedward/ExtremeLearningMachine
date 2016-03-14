@@ -1,7 +1,7 @@
 import random as rand
 import activation_functions as af
 import numpy as np
-
+from NeuronLayer import NeuronLayer
 
 class FeedforwardSingleNeuralNetwork:
 
@@ -11,28 +11,22 @@ class FeedforwardSingleNeuralNetwork:
 		self.nHiddenNeurons = nHiddenNeurons
 		self.nOutNeurons = nOutNeurons
 		
+		self.hiddenLayer = NeuronLayer(self.nHiddenNeurons, nInNeurons)
+		self.outLayer = NeuronLayer(self.nOutNeurons, self.hiddenLayer.nNeurons)
 
-		#List of input weights randomly initialised
-		self.inWeights = [[rand.uniform(0,1) for _ in range(self.nHiddenNeurons)] for _ in range(self.nInNeurons)]
 		
 	def feedForward(self, dataset):
 		
-		inNeuronActivation = [[1]*self.nInNeurons for _ in range(len(dataset))]	
-		hiddenNeuronActivation = [[1]*self.nHiddenNeurons for _ in range(len(dataset))]
-
-		for sample in range(len(dataset)):
-			#Except bias neuron
-			for i in range(self.nInNeurons - 1):
-				inNeuronActivation[sample][i] = dataset[sample][i]
-
-
+		
+		hiddenNeuronActivation = np.array(len(dataset), self.nHiddenNeurons)
+		
 		for sample in range(len(dataset)):
 			for hNeuron in range(self.nHiddenNeurons):
-				sumTotal = 0.0
+				activation = 0.0
 				for inNeuron in range(self.nInNeurons):
-					sumTotal += (inNeuronActivation[sample][inNeuron] * self.inWeights[inNeuron][hNeuron])
+					activation += (dataset[sample][inNeuron] * self.hiddenLayer.neurons[hNeuron].weight[inNeuron])
 								
-				hiddenNeuronActivation[sample][hNeuron] = self.activationFunction(sumTotal)
+				hiddenNeuronActivation[sample][hNeuron] = self.activationFunction(activation)
 
 		return hiddenNeuronActivation		
 
@@ -40,7 +34,7 @@ class FeedforwardSingleNeuralNetwork:
 
 		hiddenNeuronActivation = self.feedForward(trainSet)	
 		
-		self.outWeights = np.transpose(np.dot(np.linalg.pinv(hiddenNeuronActivation), np.transpose(labelSet)))
+		self.outWeights = np.dot(np.linalg.pinv(hiddenNeuronActivation), labelSet)
 
 		
 
@@ -49,15 +43,18 @@ class FeedforwardSingleNeuralNetwork:
 
 	def predict(self, testSet):
 		
+		print self.outWeights
+		print np.shape(self.outWeights)
+
 		hiddenNeuronActivation = self.feedForward(testSet)
-
-		outNeuronActivation = [1]*self.nOutNeurons
+		return np.dot(self.outWeights, hiddenNeuronActivation)
+#		outNeuronActivation = [1]*self.nOutNeurons
 		
-		for outNeuron in range(self.nOutNeurons):
-			sumTotal = 0.0
-			for hNeuron in range(self.nHiddenNeurons):
-				sumTotal += (hiddenNeuronActivation[outNeuron][hNeuron] * self.outWeights[hNeuron])
+#		for outNeuron in range(self.nOutNeurons):
+#			sumTotal = 0.0
+#			for hNeuron in range(self.nHiddenNeurons):
+#				sumTotal += (hiddenNeuronActivation[outNeuron][hNeuron] * self.outWeights[hNeuron])
 			
-		outNeuronActivation[outNeuron] = self.activationFunction(sumTotal)
+#		outNeuronActivation[outNeuron] = self.activationFunction(sumTotal)
 
-		return outNeuronActivation	
+#		return outNeuronActivation	
