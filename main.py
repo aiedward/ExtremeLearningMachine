@@ -4,11 +4,12 @@ import numpy as np
 
 
 
-ffsn = FeedforwardSingleNeuralNetwork(3,5,2)
+ffsn = FeedforwardSingleNeuralNetwork(4,3,2)
 
-ffsn.train([[1,2,3],[1,2,1]], [3,1])
+ffsn.train([[0,1,0,1],[0,1,1,0],[1,0,1,0]], [[0,1], [1,0], [0,0]])
 
-print ffsn.predict([[1,2,3],[1,2,1],[1,2,2]])
+print ffsn.predict([[0,1,0,1], [0,0,0,1]])
+
 
 
 
