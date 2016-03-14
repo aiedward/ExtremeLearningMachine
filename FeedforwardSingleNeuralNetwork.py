@@ -69,4 +69,5 @@ class FeedforwardSingleNeuralNetwork:
 				activation -= self.outLayer.neurons[outNeuron].weight[self.nHiddenNeurons]	
 				outNeuronActivation[sample][outNeuron] = self.activationFunction(activation)
 
+		#Gerando valores repetidos - verificar esse erro
 		return outNeuronActivation	
