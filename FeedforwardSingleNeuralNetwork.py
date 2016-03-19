@@ -5,15 +5,10 @@ from NeuronLayer import NeuronLayer
 
 class FeedforwardSingleNeuralNetwork:
 
-	def __init__(self, nInNeurons, nHiddenNeurons, nOutNeurons):
-
-		self.nInNeurons = nInNeurons 
+	def __init__(self, nHiddenNeurons, trainSet):
+		
 		self.nHiddenNeurons = nHiddenNeurons
-		self.nOutNeurons = nOutNeurons
-		
-		self.hiddenLayer = NeuronLayer(self.nHiddenNeurons, self.nInNeurons)
-		self.outLayer = NeuronLayer(self.nOutNeurons, self.nHiddenNeurons)
-		
+				
 	def feedForward(self, dataset):
 		
 		
@@ -31,6 +26,10 @@ class FeedforwardSingleNeuralNetwork:
 		return hiddenNeuronActivation		
 
 	def train(self, trainSet, labelSet):
+
+		self.nInNeurons = len(trainSet[0])
+		self.hiddenLayer = NeuronLayer(self.nHiddenNeurons, self.nInNeurons) 
+		self.nOutNeurons = len(labelSet[0])
 
 		hiddenNeuronActivation = self.feedForward(trainSet)	
 		
@@ -51,6 +50,9 @@ class FeedforwardSingleNeuralNetwork:
 
 	def predict(self, testSet):
 		
+		
+		self.outLayer = NeuronLayer(self.nOutNeurons, self.nHiddenNeurons)
+
 		outNeuronActivation = np.zeros((len(testSet), self.nOutNeurons))	
 
 		hiddenNeuronActivation = self.feedForward(testSet)
