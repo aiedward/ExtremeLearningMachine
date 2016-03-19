@@ -5,7 +5,7 @@ from NeuronLayer import NeuronLayer
 
 class FeedforwardSingleNeuralNetwork:
 
-	def __init__(self, nHiddenNeurons, trainSet):
+	def __init__(self):
 		
 		self.nHiddenNeurons = nHiddenNeurons
 				
@@ -35,14 +35,6 @@ class FeedforwardSingleNeuralNetwork:
 		
 		outWeights = np.dot(np.linalg.pinv(hiddenNeuronActivation), np.array(labelSet))
 		
-
-
-		for neuron in range(self.nOutNeurons):
-			for weight in range(self.nHiddenNeurons):
-				self.outLayer.neurons[neuron].weight[weight] = outWeights[weight][neuron]	
-
-	
-		print "Train"
 		print hiddenNeuronActivation
 
 	def activationFunction(self, data):
