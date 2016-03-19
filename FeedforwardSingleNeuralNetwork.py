@@ -5,7 +5,7 @@ from NeuronLayer import NeuronLayer
 
 class FeedforwardSingleNeuralNetwork:
 
-	def __init__(self):
+	def __init__(self, nHiddenNeurons):
 		
 		self.nHiddenNeurons = nHiddenNeurons
 				
