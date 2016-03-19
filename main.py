@@ -4,9 +4,9 @@ import numpy as np
 
 
 
-ffsn = FeedforwardSingleNeuralNetwork(3)
-ffsn.train([[0,1,0,1], [1,0,1,0], [0,1,1,0]], [[0,1],[1,0],[0,1]])
-
+ffsn = FeedforwardSingleNeuralNetwork(10)
+ffsn.train([[0,1,0,1], [1,0,1,0]], [[0,1],[1,0]])
+print ffsn.predict([[0,1,0,1], [1,0,1,0]])
 
 
 
