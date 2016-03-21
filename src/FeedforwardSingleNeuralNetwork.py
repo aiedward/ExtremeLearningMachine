@@ -11,7 +11,8 @@ class FeedforwardSingleNeuralNetwork:
 				
 	def feedForward(self, dataset):
 		
-		
+		print "Feeding Forward..."
+
 		hiddenNeuronActivation = np.zeros((len(dataset), self.nHiddenNeurons))
 		
 		for sample in range(len(dataset)):
@@ -27,9 +28,12 @@ class FeedforwardSingleNeuralNetwork:
 
 	def train(self, trainSet, labelSet):
 
+		print "Training..."
+
 		self.nInNeurons = len(trainSet[0])
 		self.hiddenLayer = NeuronLayer(self.nHiddenNeurons, self.nInNeurons) 
 		self.nOutNeurons = len(labelSet[0])
+
 		self.outLayer = NeuronLayer(self.nOutNeurons, self.nHiddenNeurons)
 
 		hiddenNeuronActivation = self.feedForward(trainSet)	
@@ -46,6 +50,7 @@ class FeedforwardSingleNeuralNetwork:
 
 	def predict(self, testSet):
 		
+		print "Testing..."
 
 		outNeuronActivation = np.zeros((len(testSet), self.nOutNeurons))	
 
