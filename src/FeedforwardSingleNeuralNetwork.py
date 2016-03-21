@@ -36,7 +36,10 @@ class FeedforwardSingleNeuralNetwork:
 		
 		outWeights = np.dot(np.linalg.pinv(hiddenNeuronActivation), np.array(labelSet))
 		
-		#Setar os pesos de saida na camada dos neurônios de saida 		
+		for hNeuron in range(self.nHiddenNeurons):
+			for outNeuron in range(self.nOutNeurons):
+				self.outLayer.neurons[outNeuron].weight[hNeuron] = outWeights[hNeuron][outNeuron]
+			
 
 	def activationFunction(self, data):
 		return af.sigmoid(data)		
