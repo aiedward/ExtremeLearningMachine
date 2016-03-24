@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from FeedforwardSingleNeuralNetwork import FeedforwardSingleNeuralNetwork
 import numpy as np
+import random
 
 class Main:
 
@@ -43,76 +44,85 @@ class Main:
 
 	def run(self):
 
-		rawDataset = open('../selectedUserMore', 'r')
-
-		# Value 0 represents max number of apps => It must be set
-		maxValuesByFeature = [6,4,2,2,2,0,4,5,3]
-
+		rawDataset = open('../iris', 'r')
+		
 		datasetFeatures = []
 		datasetLabels = []
 
-		maxApps = self.findMaxNumberOfApps(rawDataset)
-
-		# Setting max number of apps
-		maxValuesByFeature[5] = maxApps
-
 		rawDataset.seek(0)
 		for line in rawDataset:
-			tuples = line.split(';')
+			tuples = line.split(',')
+			datasetFeatures.append(tuples[:-1])
+			label = []
 
-			for t in range(len(tuples)):
+			l = tuples[4].strip()
 
-				
-				listFeatureNeurons = []
-				listLabelNeurons = []
-
-				tup = tuples[t]
-				vals = tup.split(',')
-				label = vals[0]
-				features = vals[1].split('_')
-				
-				for feature in range(len(features)):
-					val = features[feature]
-					listFeatureNeurons += self.createNeuronInput(val, maxValuesByFeature[feature])
-				
-				listLabelNeurons += self.createNeuronInput(label, maxApps)
-
-				datasetFeatures.append(listFeatureNeurons)
-				datasetLabels.append(listLabelNeurons)
+			if(l == "Iris-setosa"):
+				label += [1,0,0]
+			elif(l == "Iris-versicolor"):	  	
+				label += [0,1,0]
+			else:
+				label += [0,0,1]	
+			datasetLabels.append(label)
 
 		rawDataset.close()		
 
 		nTuples = len(datasetLabels)
 
-		nTrain = int(0.7 * nTuples)
-
-		trainSetFeatures = datasetFeatures[:nTrain]
-		trainSetLabels = datasetLabels[:nTrain]
-
-		testSetFeatures = datasetFeatures[nTrain:]
-		testSetLabels = datasetLabels[nTrain:]
-
-
-
-		ffsn = FeedforwardSingleNeuralNetwork(10)
-		ffsn.train(trainSetFeatures, trainSetLabels)
+		randomizedIndexTuples = [x for x in range(nTuples)]
 		
-		results = ffsn.predict(testSetFeatures)
+		nIterations = 10
+		totalAccuracy = 0.0
 
-		nPredictedCorrectly = 0	
+		for _ in range(nIterations):
 
-		for test in range(len(testSetLabels)):
-			realValue = testSetLabels[test].index(1)
-			predictedValue = np.argmax(results[test])	
+			random.shuffle(randomizedIndexTuples)
+
+			nTrain = int(0.7 * nTuples)
+
+			trainSetFeatures = []
+			trainSetLabels = []
+
+			testSetFeatures = []
+			testSetLabels = []
+
+			for index in range(nTrain):
+				pos = randomizedIndexTuples[index]
+				trainSetFeatures.append(datasetFeatures[pos])	
+				trainSetLabels.append(datasetLabels[pos])
+
+			for index in range(nTrain, nTuples):
+				pos = randomizedIndexTuples[index]
+				testSetFeatures.append(datasetFeatures[pos])	
+				testSetLabels.append(datasetLabels[pos])	
+
 			
-			if(int(realValue) == int(predictedValue)):
-				++nPredictedCorrectly
 
-				
-			# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
+			ffsn = FeedforwardSingleNeuralNetwork(10)
+			ffsn.train(trainSetFeatures, trainSetLabels)
+			
+			results = ffsn.predict(testSetFeatures)
+			
 
-		print nPredictedCorrectly	
-		print "Accuracy: " + str(float(nPredictedCorrectly / (nTuples - nTrain)))	
+			nPredictedCorrectly = 0	
+
+			for test in range(len(testSetLabels)):
+				realValue = testSetLabels[test].index(1)
+				predictedValue = np.argmax(results[test])	
+
+				if(int(realValue) == int(predictedValue)):
+					nPredictedCorrectly += 1
+
+					
+				# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
+
+			totalTests = nTuples - nTrain
+			accuracy = float(nPredictedCorrectly) / totalTests	
+			print "Accuracy: " + str(accuracy)
+			totalAccuracy += accuracy
+
+		meanTotalAccuracy = totalAccuracy / nIterations	
+		print "Total Accuracy: " + str(meanTotalAccuracy)
 
 main = Main()
 main.run()

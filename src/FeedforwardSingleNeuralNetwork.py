@@ -19,10 +19,10 @@ class FeedforwardSingleNeuralNetwork:
 			for hNeuron in range(self.hiddenLayer.nNeurons):
 				activation = 0.0
 				for inNeuron in range(self.nInNeurons):
-					activation += (dataset[sample][inNeuron] * self.hiddenLayer.neurons[hNeuron].weight[inNeuron])
+					activation += (float(dataset[sample][inNeuron]) * float(self.hiddenLayer.neurons[hNeuron].weight[inNeuron]))
 				#Add bias weight ( w1x1 + w2x2 + (-1)bWeight)
-				activation -= self.hiddenLayer.neurons[hNeuron].weight[self.nInNeurons]				
-				hiddenNeuronActivation[sample][hNeuron] = self.activationFunction(activation)
+				activation -= float(self.hiddenLayer.neurons[hNeuron].weight[self.nInNeurons])
+				hiddenNeuronActivation[sample][hNeuron] = float(self.activationFunction(activation))
 
 		return hiddenNeuronActivation		
 
@@ -42,7 +42,7 @@ class FeedforwardSingleNeuralNetwork:
 		
 		for hNeuron in range(self.nHiddenNeurons):
 			for outNeuron in range(self.nOutNeurons):
-				self.outLayer.neurons[outNeuron].weight[hNeuron] = outWeights[hNeuron][outNeuron]
+				self.outLayer.neurons[outNeuron].weight[hNeuron] = float(outWeights[hNeuron][outNeuron])
 			
 
 	def activationFunction(self, data):
@@ -60,10 +60,10 @@ class FeedforwardSingleNeuralNetwork:
 			for outNeuron in range(self.nOutNeurons):
 				activation = 0.0
 				for hNeuron in range(self.nHiddenNeurons):
-					activation += (hiddenNeuronActivation[sample][hNeuron] * self.outLayer.neurons[outNeuron].weight[hNeuron])
+					activation += (float(hiddenNeuronActivation[sample][hNeuron]) * float(self.outLayer.neurons[outNeuron].weight[hNeuron]))
 				
-				activation -= self.outLayer.neurons[outNeuron].weight[self.nHiddenNeurons]	
-				outNeuronActivation[sample][outNeuron] = self.activationFunction(activation)
+				activation -= float(self.outLayer.neurons[outNeuron].weight[self.nHiddenNeurons])	
+				outNeuronActivation[sample][outNeuron] = float(self.activationFunction(activation))
 
 		
 		return outNeuronActivation	
