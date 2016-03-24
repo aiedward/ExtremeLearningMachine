@@ -98,7 +98,7 @@ class Main:
 
 			
 
-			ffsn = FeedforwardSingleNeuralNetwork(10)
+			ffsn = FeedforwardSingleNeuralNetwork(40)
 			ffsn.train(trainSetFeatures, trainSetLabels)
 			
 			results = ffsn.predict(testSetFeatures)
