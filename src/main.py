@@ -86,41 +86,25 @@ class Main:
 		nTuples = len(datasetLabels)
 
 		nTrain = int(0.7 * nTuples)
-
-		randomizedIndexTuples = [x for x in range(nTuples)]
-		
-		nIterations = 1
+				
+		nMaxHidden = 3000
 		totalAccuracy = 0.0
 
-		for _ in range(nIterations):
+		trainSetFeatures = datasetFeatures[:nTrain]
+		trainSetLabels = datasetLabels[:nTrain]
 
-			random.shuffle(randomizedIndexTuples)
+		testSetFeatures = datasetFeatures[nTrain:]
+		testSetLabels = datasetLabels[nTrain:]
 
-			nTrain = int(0.7 * nTuples)
 
-			trainSetFeatures = []
-			trainSetLabels = []
-
-			testSetFeatures = []
-			testSetLabels = []
-
-			for index in range(nTrain):
-				pos = randomizedIndexTuples[index]
-				trainSetFeatures.append(datasetFeatures[pos])	
-				trainSetLabels.append(datasetLabels[pos])
-
-			for index in range(nTrain, nTuples):
-				pos = randomizedIndexTuples[index]
-				testSetFeatures.append(datasetFeatures[pos])	
-				testSetLabels.append(datasetLabels[pos])	
-						
-
-			ffsn = FeedforwardSingleNeuralNetwork(100)
+		for x in range(2000,nMaxHidden):
+			
+			
+			ffsn = FeedforwardSingleNeuralNetwork(x)
 			ffsn.train(trainSetFeatures, trainSetLabels)
 			
 			results = ffsn.predict(testSetFeatures)
 			
-
 			nPredictedCorrectly = 0	
 
 			for test in range(len(testSetLabels)):
@@ -135,8 +119,9 @@ class Main:
 
 			totalTests = nTuples - nTrain
 			accuracy = float(nPredictedCorrectly) / totalTests	
-			print "Accuracy: " + str(accuracy)
+			print "N Hidden: " + str(x) + " / Accuracy: " + str(accuracy)
 			totalAccuracy += accuracy
+
 
 		meanTotalAccuracy = totalAccuracy / nIterations	
 		print "Total Accuracy: " + str(meanTotalAccuracy)	
