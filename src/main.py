@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from FeedforwardSingleNeuralNetwork import FeedforwardSingleNeuralNetwork
 import numpy as np
+import random
 
 class Main:
 
@@ -86,33 +87,59 @@ class Main:
 
 		nTrain = int(0.7 * nTuples)
 
-		trainSetFeatures = datasetFeatures[:nTrain]
-		trainSetLabels = datasetLabels[:nTrain]
-
-		testSetFeatures = datasetFeatures[nTrain:]
-		testSetLabels = datasetLabels[nTrain:]
-
-
-
-		ffsn = FeedforwardSingleNeuralNetwork(10)
-		ffsn.train(trainSetFeatures, trainSetLabels)
+		randomizedIndexTuples = [x for x in range(nTuples)]
 		
-		results = ffsn.predict(testSetFeatures)
+		nIterations = 1
+		totalAccuracy = 0.0
 
-		nPredictedCorrectly = 0	
+		for _ in range(nIterations):
 
-		for test in range(len(testSetLabels)):
-			realValue = testSetLabels[test].index(1)
-			predictedValue = np.argmax(results[test])	
+			random.shuffle(randomizedIndexTuples)
+
+			nTrain = int(0.7 * nTuples)
+
+			trainSetFeatures = []
+			trainSetLabels = []
+
+			testSetFeatures = []
+			testSetLabels = []
+
+			for index in range(nTrain):
+				pos = randomizedIndexTuples[index]
+				trainSetFeatures.append(datasetFeatures[pos])	
+				trainSetLabels.append(datasetLabels[pos])
+
+			for index in range(nTrain, nTuples):
+				pos = randomizedIndexTuples[index]
+				testSetFeatures.append(datasetFeatures[pos])	
+				testSetLabels.append(datasetLabels[pos])	
+						
+
+			ffsn = FeedforwardSingleNeuralNetwork(100)
+			ffsn.train(trainSetFeatures, trainSetLabels)
 			
-			if(int(realValue) == int(predictedValue)):
-				++nPredictedCorrectly
+			results = ffsn.predict(testSetFeatures)
+			
 
-				
-			# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
+			nPredictedCorrectly = 0	
 
-		print nPredictedCorrectly	
-		print "Accuracy: " + str(float(nPredictedCorrectly / (nTuples - nTrain)))	
+			for test in range(len(testSetLabels)):
+				realValue = testSetLabels[test].index(1)
+				predictedValue = np.argmax(results[test])	
+
+				if(int(realValue) == int(predictedValue)):
+					nPredictedCorrectly += 1
+
+					
+				# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
+
+			totalTests = nTuples - nTrain
+			accuracy = float(nPredictedCorrectly) / totalTests	
+			print "Accuracy: " + str(accuracy)
+			totalAccuracy += accuracy
+
+		meanTotalAccuracy = totalAccuracy / nIterations	
+		print "Total Accuracy: " + str(meanTotalAccuracy)	
 
 main = Main()
 main.run()
