@@ -62,29 +62,18 @@ class Main:
 			tuples = line.split(';')
 
 			for t in range(len(tuples)):
-
-				
-				listFeatureNeurons = []
-				listLabelNeurons = []
-
+												
 				tup = tuples[t]
 				vals = tup.split(',')
 				label = vals[0]
 				features = vals[1].split('_')
 				
-				for feature in range(len(features)):
-					val = features[feature]
-					listFeatureNeurons += self.createNeuronInput(val, maxValuesByFeature[feature])
-				
-				listLabelNeurons += self.createNeuronInput(label, maxApps)
-
-				datasetFeatures.append(listFeatureNeurons)
-				datasetLabels.append(listLabelNeurons)
+				datasetFeatures.append(features)
+				datasetLabels.append(label)
 
 		rawDataset.close()		
 
 		nTuples = len(datasetLabels)
-
 		
 		nTrain = int(0.7 * nTuples)
 				
