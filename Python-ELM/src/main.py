@@ -61,8 +61,9 @@ class Main:
 		for line in rawDataset:
 			tuples = line.split(';')
 
+
 			for t in range(len(tuples)):
-												
+				
 				tup = tuples[t]
 				vals = tup.split(',')
 				label = vals[0]
@@ -70,6 +71,7 @@ class Main:
 				
 				datasetFeatures.append(features)
 				datasetLabels.append(label)
+
 
 		rawDataset.close()		
 
@@ -80,38 +82,38 @@ class Main:
 		nMaxHidden = 3005
 		totalAccuracy = 0.0
 
-		trainSetFeatures = datasetFeatures[:nTrain]
-		trainSetLabels = datasetLabels[:nTrain]
+		trainSetFeatures = np.array(datasetFeatures[:nTrain], dtype=np.int)
+		trainSetLabels = np.array(datasetLabels[:nTrain], dtype=np.int)
 
-		testSetFeatures = datasetFeatures[nTrain:]
-		testSetLabels = datasetLabels[nTrain:]
+		testSetFeatures = np.array(datasetFeatures[nTrain:], dtype=np.int)
+		testSetLabels = np.array(datasetLabels[nTrain:], dtype=np.int)
 
 
 		# for x in range(200,nMaxHidden):
 		
-		print testSetLabels
-			
-		ffsn = ELMClassifier(n_hidden=100, activation_func='sigmoid')
+		ffsn = ELMClassifier(n_hidden=1000, activation_func='sine')
 		ffsn.fit(trainSetFeatures, trainSetLabels)
 			
-			# results = ffsn.predict(testSetFeatures)
+		results = ffsn.predict(testSetFeatures)
 			
-			# nPredictedCorrectly = 0	
+		nPredictedCorrectly = 0	
 
-			# for test in range(len(testSetLabels)):
-			# 	realValue = testSetLabels[test].index(1)
-			# 	predictedValue = np.argmax(results[test])	
+		
+		for test in range(len(testSetLabels)):
+			realValue = testSetLabels[test]
+			predictedValue = results[test]	
+			
+			if(int(realValue) == int(predictedValue)):
+				nPredictedCorrectly += 1
 
-			# 	if(int(realValue) == int(predictedValue)):
-			# 		nPredictedCorrectly += 1
+				
+			# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
 
-					
-			# 	# print "Real: " + str(realValue) + " / Predicted: " + str(predictedValue)	
-
-			# totalTests = nTuples - nTrain
-			# accuracy = float(nPredictedCorrectly) / totalTests	
-			# print "N Hidden: " + str(x) + " / Accuracy: " + str(accuracy)
-			# totalAccuracy += accuracy
+		totalTests = nTuples - nTrain
+		accuracy = float(nPredictedCorrectly) / totalTests	
+		# print "N Hidden: " + str(x) + " / Accuracy: " + str(accuracy)
+		print "Accuracy: " + str(accuracy)
+		totalAccuracy += accuracy
 
 
 		# meanTotalAccuracy = totalAccuracy / nIterations	
